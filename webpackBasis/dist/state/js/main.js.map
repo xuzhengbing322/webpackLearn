@@ -1,0 +1,1 @@
+{"version":3,"file":"state/js/main.js","mappings":"yBAEAA,QAAQC,IADK,OAEbD,QAAQC,IAAI,GACZD,QAAQC,IAAI,E","sources":["webpack://ts-loader/./src/main.ts"],"sourcesContent":["import './less/index.less';\nlet result = 'tes';\nconsole.log(result);\nconsole.log(1);\nconsole.log(8);\n"],"names":["console","log"],"sourceRoot":""}
