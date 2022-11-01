@@ -13,9 +13,13 @@ const threads = os.cpus().length //cup核数
 const TerserWebpackPlugin = require("terser-webpack-plugin")
 
 module.exports = {
-    entry: './src/main.ts',
+    entry: {
+        // 多个文件入口打包
+        main:'./src/ts/main.ts',
+        app:'./src/ts/app.ts'
+    },
     output: {
-        filename: 'state/js/main.js',
+        filename: 'state/js/[name].js',
         // 开发模式没有输出，热更新
         path: undefined
     },

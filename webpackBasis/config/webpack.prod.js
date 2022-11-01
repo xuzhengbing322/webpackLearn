@@ -14,9 +14,13 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 module.exports = {
-    entry: './src/main.ts',
+    entry: {
+        // 多个文件入口打包
+        main: './src/ts/main.ts',
+        app: './src/ts/app.ts'
+    },
     output: {
-        filename: 'state/js/main.js',
+        filename: 'state/js/[name].js',
         // 生产模式下有输出
         path: path.resolve(__dirname, '../dist'),
         // 在打包前，将path整个目录内容清空，再进行打包
@@ -27,7 +31,7 @@ module.exports = {
     },
     module: {
         rules: [{
-             // 每个文件只能被其中一个loader配置处理
+            // 每个文件只能被其中一个loader配置处理
             oneOf: [
                 // 处理ts文件
                 {
@@ -105,5 +109,37 @@ module.exports = {
     ],
     // 生产模式：代码上线，优化代码运行性能和打包速度
     mode: 'production',
-    devtool: "source-map"
+    devtool: "source-map",
+    optimization: {
+        // 代码分割配置。chunk：每个打包的文件都是一个chunk。输出出去叫build。
+        splitChunks: {
+            chunks: 'all', //对所有模块都进行分割
+            // 以下是默认值
+            // minSize:20000, //分割代码最小的大小
+            //minRemainingSize:0, //类似于minSize，最后确保提取的文件大小不能为0
+            //minChunks:1,  //至少被引用的次数，满足条件次啊会代码分割
+            //maxAsyncRequests:30, //按需加载时并行加载的文件的最大数量
+            //maxInitialRequests:30, //入口js文件最大并行请求数量
+            //enforceSizeThreshold:50000, //超过50kb一定会单独打包
+            //cacheGroups:{  //组，哪些模块要打包到一个组
+            //test: /[\\/]node_modules[\\/]/, //需要打包到一起的模块
+            //priority:-10, //权重（越大越高）
+            //reuseExistingChunk:true, //如果当前chunk包含已从主bundle中拆分出的模块，则它将被重用，而不是生成新的模块
+            //},
+            // default:{ //其他没有写的配置会使用上面的默认值
+            // minChunks:2, //这里的minChunks权重更大
+            // priority:-20,
+            // reuseExistingChunk:true,
+            // },
+            // 修改配置。将复用的文件单独打包，避免重复引用。
+            cacheGroups: {
+                default: { //其他没有写的配置会使用上面的默认值
+                    minSize:0, //现在定义的文件体积太小，所以要改打包的最小文件体积。
+                    minChunks: 2, //这里的minChunks权重更大
+                    priority: -20,
+                    reuseExistingChunk: true,
+                },
+            },
+        }
+    }
 }
