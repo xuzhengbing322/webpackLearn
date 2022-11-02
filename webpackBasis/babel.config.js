@@ -2,7 +2,10 @@ module.exports = {
     // 预设就是一组babel插件，扩充babel功能。能后编译es6语法，以及ts语法。
     presets: [
         // 指定环境的插件
-        "@babel/preset-env",
+        ["@babel/preset-env", {
+            useBuiltIns: 'usage', //实现core-js的自动按需加载
+            corejs: 3
+        }],
         "@babel/preset-typescript",
     ],
     // cacheDirectory:true,  //开启babel缓存

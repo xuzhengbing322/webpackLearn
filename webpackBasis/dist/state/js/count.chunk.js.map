@@ -1,0 +1,1 @@
+{"version":3,"file":"state/js/count.chunk.js","mappings":"0GAAO,SAASA,EAAOC,EAAWC,GAC9B,OAAOA,EAAYD,CACvB,C","sources":["webpack://ts-loader/./src/ts/count.ts"],"sourcesContent":["export function reduce(paramsOne, paramsTwo) {\n    return paramsTwo - paramsOne;\n}\n"],"names":["reduce","paramsOne","paramsTwo"],"sourceRoot":""}

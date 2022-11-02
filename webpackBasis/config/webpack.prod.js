@@ -12,6 +12,8 @@ const {
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 // 优化和压缩css文件
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+// 预加载文件
+const PreloadWebpackPlugin = require("@vue/preload-webpack-plugin")
 
 module.exports = {
     entry: {
@@ -20,7 +22,12 @@ module.exports = {
         app: './src/ts/app.ts'
     },
     output: {
+        // 主文件命名
         filename: 'state/js/[name].js',
+        // 打包输出的其他文件命名
+        chunkFilename: "state/js/[name].chunk.js",
+        // 图片、字体等通过type:asset处理资源命名方式
+        assetModuleFilename:'state/images/[name]_[hash:4][ext]',
         // 生产模式下有输出
         path: path.resolve(__dirname, '../dist'),
         // 在打包前，将path整个目录内容清空，再进行打包
@@ -80,7 +87,7 @@ module.exports = {
                     },
                     generator: {
                         // 输出图片名字，并放在images文件夹中。
-                        filename: 'state/images/[name]_[hash:4][ext]'
+                        // filename: 'state/images/[name]_[hash:4][ext]'
                     },
                 },
                 // 处理html文件的img图片
@@ -103,9 +110,17 @@ module.exports = {
         }),
         new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
-            filename: 'state/css/main.css'
+            filename: 'state/css/[name].css',
+            chunkFilename:'state/css/[name].chunk.css'
         }),
-        new CssMinimizerPlugin()
+        new CssMinimizerPlugin(),
+        new PreloadWebpackPlugin({
+            // // js使用preload方式加载
+            // rel:'preload',
+            // // 作为script优先级去做
+            // as:'script'
+            rel:'prefetch'
+        })
     ],
     // 生产模式：代码上线，优化代码运行性能和打包速度
     mode: 'production',
@@ -140,6 +155,10 @@ module.exports = {
                     reuseExistingChunk: true,
                 },
             },
+        },
+        // 将hash值单独打包，避免文件重新打包后，它的关联文件也会重新打包（因为hash值的改变）
+        runtimeChunk:{
+            name:(entrypoint) => `runtime~${entrypoint.name}.js`
         }
     }
 }
